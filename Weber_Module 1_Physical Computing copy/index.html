@@ -1,0 +1,896 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Physical Computing Fall 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --bg-alt: #f4f4f4;
+        --text: #121212;
+        --text-soft: rgba(18, 18, 18, 0.7);
+        --line: rgba(18, 18, 18, 0.12);
+        --accent: #121212;
+        --accent-text: #ffffff;
+        --radius: 4px;
+        --page-width: 1200px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--text);
+        background: var(--bg);
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      img,
+      video {
+        max-width: 100%;
+        display: block;
+      }
+      h1,
+      h2,
+      h3,
+      h4 {
+        margin: 0;
+        line-height: 1.2;
+        font-weight: 600;
+      }
+      figure {
+        margin: 0;
+      }
+
+      .page-width {
+        max-width: var(--page-width);
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ---------- Announcement bar ---------- */
+      .announcement {
+        background: var(--accent);
+        color: var(--accent-text);
+        text-align: center;
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 9px 16px;
+      }
+
+      /* ---------- Hero banner ---------- */
+      .hero {
+        background: var(--bg-alt);
+        text-align: left;
+        padding: 110px 0 100px;
+      }
+      .hero h1 {
+        font-size: clamp(34px, 6vw, 64px);
+        font-weight: 700;
+        margin-bottom: 18px;
+      }
+      .hero p {
+        max-width: 640px;
+        margin: 0;
+        font-size: 17px;
+        color: var(--text-soft);
+      }
+
+      /* ---------- Sections ---------- */
+      .section-head h2 {
+        font-size: clamp(24px, 3.4vw, 34px);
+      }
+      .section-head h3 {
+        font-size: 17px;
+        font-weight: 400;
+        color: var(--text-soft);
+        margin-top: 10px;
+        max-width: 760px;
+      }
+      .section-head p {
+        color: var(--text-soft);
+        margin: 10px 0 0;
+        max-width: 760px;
+      }
+      .section-head h2.sub-title {
+        font-size: 22px;
+        margin-top: 24px;
+      }
+      .collection-title {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        margin: 56px 0 20px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      .collection-title h2 {
+        font-size: 24px;
+      }
+      .collection-text {
+        color: var(--text-soft);
+        margin: 0 0 24px;
+      }
+      .module-block {
+        padding-top: 72px;
+      }
+      .divider {
+        border: 0;
+        border-top: 1px solid var(--line);
+        margin: 64px 0 0;
+      }
+
+      /* Space at the bottom of the page now that the footer is gone */
+      main {
+        padding-bottom: 96px;
+      }
+
+      /* ---------- Product-style card grid ---------- */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 32px 20px;
+        align-items: start;
+        counter-reset: card;
+      }
+      .card {
+        cursor: pointer;
+        counter-increment: card;
+        outline: none;
+      }
+      .card-media {
+        position: relative;
+        overflow: hidden;
+        background: var(--bg-alt);
+        border-radius: var(--radius);
+      }
+      .card-media img,
+      .card-media video {
+        display: block;
+        width: 100%;
+        height: auto;
+        max-height: 420px;
+        object-fit: contain;
+        object-position: center;
+        transition: transform 0.5s ease;
+        pointer-events: none;
+      }
+      .card:hover .card-media img,
+      .card:hover .card-media video,
+      .card:focus-visible .card-media img,
+      .card:focus-visible .card-media video {
+        transform: scale(1.05);
+      }
+      .card:focus-visible .card-media {
+        box-shadow: 0 0 0 2px var(--text);
+      }
+
+      .quick-view {
+        position: absolute;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--text);
+        border-radius: var(--radius);
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+        padding: 9px 0;
+        opacity: 0;
+        transform: translateY(8px);
+        transition:
+          opacity 0.25s,
+          transform 0.25s;
+      }
+      .card:hover .quick-view,
+      .card:focus-visible .quick-view {
+        opacity: 1;
+        transform: none;
+      }
+
+      .card-info {
+        padding-top: 12px;
+      }
+      .card-info {
+        display: none;
+      }
+      .card-title {
+        font-size: 14px;
+        font-weight: 500;
+      }
+      .card-title::before {
+        content: "Figure " counter(card, decimal-leading-zero);
+      }
+      .card-sub {
+        font-size: 13px;
+        color: var(--text-soft);
+      }
+
+      /* Concept (single large image) */
+      .feature-card {
+        margin-top: 24px;
+      }
+      .feature-card .card-media img {
+        max-height: none;
+      }
+
+      /* ---------- Quick-view modal ---------- */
+      .modal {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(0, 0, 0, 0.55);
+      }
+      .modal.open {
+        display: flex;
+      }
+      .modal-dialog {
+        position: relative;
+        display: grid;
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        width: 100%;
+        max-width: 1000px;
+        max-height: 90vh;
+        background: var(--bg);
+        border-radius: 8px;
+        overflow: hidden;
+        animation: pop 0.25s ease;
+      }
+      @keyframes pop {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .modal-media {
+        background: var(--bg-alt);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 260px;
+      }
+      .modal-media img,
+      .modal-media video {
+        width: 100%;
+        max-height: 90vh;
+        object-fit: contain;
+      }
+      .modal-body {
+        padding: 40px 32px;
+        overflow-y: auto;
+      }
+      .modal-body h2 {
+        font-size: 22px;
+        margin-bottom: 16px;
+      }
+      .modal-body p {
+        margin: 0;
+        color: var(--text-soft);
+      }
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 38px;
+        height: 38px;
+        border: 0;
+        border-radius: 50%;
+        background: var(--bg);
+        font-size: 24px;
+        line-height: 1;
+        cursor: pointer;
+        z-index: 2;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      }
+      .modal-close:hover {
+        background: var(--text);
+        color: var(--bg);
+      }
+
+      /* ---------- Responsive ---------- */
+      @media (max-width: 768px) {
+        .hero {
+          padding: 72px 0 64px;
+        }
+        .grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 24px 12px;
+        }
+        .quick-view {
+          display: none;
+        }
+        .modal {
+          padding: 0;
+          align-items: flex-end;
+        }
+        .modal-dialog {
+          grid-template-columns: 1fr;
+          max-height: 94vh;
+          overflow-y: auto;
+          border-radius: 12px 12px 0 0;
+        }
+        .modal-media img,
+        .modal-media video {
+          max-height: 50vh;
+        }
+        .modal-body {
+          padding: 24px 20px 32px;
+          overflow: visible;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="announcement">
+      IXD DESN 30146 &middot; Mia Weber &middot; Fall 2026 &middot; Module 1
+    </div>
+
+    <main>
+      <!-- Hero -->
+      <section class="hero" id="Home">
+        <div class="page-width">
+          <h1>Physical Computing</h1>
+          <p>
+            Exploring project ideas and concepts with Arduino, ProtoPie, and
+            sensors.
+          </p>
+        </div>
+      </section>
+
+      <!-- Module 1 -->
+      <section class="module-block page-width" id="Module1">
+        <h2 style="font-size: clamp(28px, 4vw, 42px)">Module 1</h2>
+        <div class="section-head">
+          <h2 class="sub-title">Activity Research</h2>
+          <h3>
+            Exploring the Arduino IDE, UNO board and sensors while learning how
+            to pair it with ProtoPie software.
+          </h3>
+        </div>
+      </section>
+
+      <!-- Activity 1 -->
+      <section class="page-width" id="Activity1">
+        <div class="collection-title">
+          <h2>Activity 1: Arduino Introduction</h2>
+        </div>
+        <div class="grid">
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 1: Arduino Introduction"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity1/IMG_0547_converted.jpg"
+                alt="Activity 1 image"
+                data-caption="The software Arduino IDE is now downloaded to my device and is set up just like ProtoPie and ProtoPie Connect. I learned how to use the Arduino IDE software and how to connect the application to the physical device. Now, I will be able to more easily use the device for my project."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Arduino Introduction</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 1: Arduino Introduction"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity1/IMG_0548_converted.jpg"
+                alt="Activity 1 image"
+                data-caption=""
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Arduino Introduction</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 1: Arduino Introduction"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity1/IMG_0549_converted.jpg"
+                alt="Activity 1 image"
+                data-caption="I got to take a look at the Arduino Uno board hooked up to another board. I was able to take a closer look at the components to see what sensors and such could be attached. It was interesting how we are building on our skills from last year."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Arduino Introduction</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 1: Arduino Introduction"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity1/IMG_0551_converted.jpg"
+                alt="Activity 1 image"
+                data-caption="As I am planning on working with a few sensors, I need to understand how they work and how to encorper them into my project most effectively. This Aurduino board has some sensors including a moisture and a humidity sensor. I plan on potentially using these in my project so it was neat to take a closer look."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Arduino Introduction</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 1: Arduino Introduction"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity1/IMG_0545_converted.jpg"
+                alt="Activity 1 image"
+                data-caption="We tested the Arduino Uno board with a simple circuit from code provided in class with LED's. This refreshed my memory about how to use the board, especially how the numbers and small icons on the side of the parts work. This is an image of the LED being off between the 1 second intervals of changing on and off."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Arduino Introduction</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 1: Arduino Introduction"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity1/IMG_0546_converted.jpg"
+                alt="Activity 1 image"
+                data-caption="We tested the Arduino Uno board with a simple circuit from code provided in class with LED's. This refreshed my memory about how to use the board, especially how the numbers and small icons on the side of the parts work. This is an image of the LED being on between the 1 second intervals of changing on and off."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Arduino Introduction</div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Activity 2 -->
+      <section class="page-width" id="Activity2">
+        <div class="collection-title">
+          <h2>Activity 2: ProtoPie Software</h2>
+        </div>
+        <div class="grid">
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 2: ProtoPie Software"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity2/IMG_0610.jpeg"
+                alt="Activity 2 image"
+                data-caption="At the begining of class we began by collecting the hardware, including the tempurature and humidity sensor visible in the first image. Talia and myself hooked up to her Macbook then we began the tutorial."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">ProtoPie Software</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 2: ProtoPie Software"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity2/IMG_0613.jpeg"
+                alt="Activity 2 image"
+                data-caption="The first step was hooking up our phones, we struggled at first but once we got the hang of it, it was pretty straightforward. I now feel prepared for working on it in future projects."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">ProtoPie Software</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 2: ProtoPie Software"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity2/IMG_0615.PNG"
+                alt="Activity 2 image"
+                data-caption="I breathed heavily on the sensor to see if I could get a change in the app. After a few seconds, the tempurature and humitidy went up!"
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">ProtoPie Software</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 2: ProtoPie Software"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity2/IMG_0616.jpeg"
+                alt="Activity 2 image"
+                data-caption="As the tempurature decreased the humidity increased from my breath, I found this interesting because initially I was expecting them to increase and decrease together."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">ProtoPie Software</div>
+            </figcaption>
+          </figure>
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Activity 2: ProtoPie Software"
+          >
+            <div class="card-media">
+              <img
+                src="images/Activity2/IMG_0618.PNG"
+                alt="Activity 2 image"
+                data-caption="When playing around with the knob in the tempurature and humidity panel, the mobile screen's upper number changed. I am assuming that this is the tempurature a user would input for what they want their house to be set at."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">ProtoPie Software</div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Activity 3 -->
+      <section class="page-width" id="Activity3">
+        <div class="collection-title">
+          <h2>Activity 3: Exsploring Arduino Uno Sensors and Touch Designer</h2>
+        </div>
+        <div class="grid">
+          <figure class="card" tabindex="0" data-title="Activity 3">
+            <div class="card-media">
+              <img
+                src="images/Activity3/A3_Img1.jpg"
+                alt="Activity 3 image"
+                data-caption="Before begining the activity I partnered up with Eddie due to the limited circuit boards. We had difficulty connecting the board to the macbook and tried many methods to redeem this issue. After 2 Macbooks, 2 circuit boards, and many restarts we figured out that the cord was the issue."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Activity 3</div>
+            </figcaption>
+          </figure>
+          <figure class="card" tabindex="0" data-title="Activity 3">
+            <div class="card-media">
+              <img
+                src="images/Activity3/A3_Img2.png"
+                alt="Activity 3 image"
+                data-caption="While trying to connect to the device we tried to use the Arduino IDE but because it was not connected there was this error message. By fixing the cord and reviewing previous material about connecting the circuit board to a device we got the equipment working in time to follow the in class tutorial."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Activity 3</div>
+            </figcaption>
+          </figure>
+          <figure class="card" tabindex="0" data-title="Activity 3">
+            <div class="card-media">
+              <img
+                src="images/Activity3/A3_Img3.png"
+                alt="Activity 3 image"
+                data-caption="With everything sorted out, we exsperimented with the sensors and how the changes are displayed in the serial monitor to make sure that everything was properly set up. I always find it intresting that the Arduino IDE application has built in templates and while Steve was helping out classmates we exsperimented with what the different templates do!!"
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Activity 3</div>
+            </figcaption>
+          </figure>
+          <figure class="card" tabindex="0" data-title="Activity 3">
+            <div class="card-media">
+              <img
+                src="images/Activity3/A3_Img4.png"
+                alt="Activity 3 image"
+                data-caption="In the past I have chatted with Bre who is a fourth year student in IXD who is highly proficient in touch designer so I enjoyed the chance to experiment with how all of the visual components work together to make a cohesive interactive design. In the future I hope to further explore the possibilities of Touch Designer."
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Activity 3</div>
+            </figcaption>
+          </figure>
+          <figure class="card" tabindex="0" data-title="Activity 3">
+            <div class="card-media">
+              <video
+                src="images/Activity3/A3_Vid.mp4#t=0.1"
+                muted
+                playsinline
+                preload="metadata"
+                data-caption="The final video displays the sensors being connected to the software with a knob on the circuit board being twisted to change the size. Eddie and I figured out through trial and error what the problem was when the visuals were not working but it was due to an error of not changing a setting when reconnecting the Arduino Uno to the Macbook."
+              ></video
+              ><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Activity 3</div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Research Activity -->
+      <section class="page-width" id="ResearchActivity">
+        <hr class="divider" />
+        <div class="section-head" style="margin-top: 72px">
+          <h2>Research Activity</h2>
+        </div>
+
+        <div class="collection-title">
+          <h2>Consumer Trend Research</h2>
+        </div>
+        <p class="collection-text">
+          HOLDER TEXT, add your research activity content here
+        </p>
+        <div class="grid">
+          <figure
+            class="card"
+            tabindex="0"
+            data-title="Consumer Trend Research"
+          >
+            <div class="card-media">
+              <img
+                src="images/Concept.png"
+                alt="Consumer Trend Research image"
+                data-caption="test2Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Consumer Trend Research</div>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="collection-title">
+          <h2>Personas Research</h2>
+        </div>
+        <p class="collection-text">
+          Locating trends for my two categories.
+        </p>
+        <div class="grid">
+          <figure class="card" tabindex="0" data-title="Personas Research">
+            <div class="card-media">
+              <img
+                src="images/Persona.png"
+                alt="Personas Research image"
+                data-caption=" "
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Personas Research</div>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="collection-title">
+          <h2>HMI Research</h2>
+        </div>
+        <p class="collection-text">
+          Exsploring potential How Might I statements for my final project direction. <t
+        </p>
+        <div class="grid">
+          <figure class="card" tabindex="0" data-title="HMI Research">
+            <div class="card-media">
+              <img
+                src="images/HMI.png"
+                alt="HMI Research image"
+                data-caption=" "
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">HMI Research</div>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="collection-title">
+          <h2>Project Path</h2>
+        </div>
+        <p class="collection-text">
+          Determining the projects path and direction.
+        </p>
+        <div class="grid">
+          <figure class="card" tabindex="0" data-title="Project Path">
+            <div class="card-media">
+              <img
+                src="images/Path.png"
+                alt="Project Path image"
+                data-caption=""
+              /><span class="quick-view">Quick view</span>
+            </div>
+            <figcaption class="card-info">
+              <div class="card-title"></div>
+              <div class="card-sub">Project Path</div>
+            </figcaption>
+          </figure>
+        </div>
+        
+        <p class="collection-text">
+         
+      </section>
+
+      <!-- Project Concept -->
+      <section class="page-width module-block" id="ProjectConcept">
+        <hr class="divider" style="margin-top: 0; margin-bottom: 72px" />
+        <h2 style="font-size: clamp(28px, 4vw, 42px)">Project 1 Concept</h2>
+        <div class="section-head">
+          <h2 class="sub-title">Project 1 Concept</h2>
+          <p>
+            HMI Statement: How might I create a plant care product that promotes health
+            wellness, is affordable and aligns with future market trends?
+            <br><br>
+            I will be taking the design path to create a product for plant owners who want the air purifying benifits
+but struggle with keeping their plants healthy and happy. The product is a plant pot with built in sensors that notify the individual if the plant requires watering(details will be given for how much water and how to water) or different light conditions. The sensors will connect with the Arduino board and then my code, using an API to determine the plant's needs and then send a notification to the user's phone. The app will request the pot's product number to connect and then the plant type will be entered in order for the API to retrieve the care requirements and to check if it should display a warning if the plant can be harmful to pets.
+            
+          </p>
+        </div>
+        <figure
+          class="card feature-card"
+          tabindex="0"
+          data-title="Project 1 Concept"
+        >
+          <div class="card-media">
+            <img
+              src="images/MockupFull.jpg"
+              alt="Project 1 Concept image"
+              data-caption=""
+            /><span class="quick-view">Quick view</span>
+          </div>
+
+          <div class="card-media">
+            <img
+              src="images/MockupSketch.png"
+              alt="Project 1 Concept image"
+              data-caption=""
+            /><span class="quick-view">Quick view</span>
+          </div>
+        </figure>
+      </section>
+    </main>
+
+    <!-- Quick-view modal -->
+    <div class="modal" id="modal01" aria-hidden="true">
+      <div
+        class="modal-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modalTitle"
+      >
+        <button class="modal-close" id="modalClose" aria-label="Close">
+          &times;
+        </button>
+        <div class="modal-media">
+          <img id="img01" alt="" />
+          <video id="vid01" controls style="display: none"></video>
+        </div>
+        <div class="modal-body">
+          <h2 id="modalTitle"></h2>
+          <p id="caption"></p>
+        </div>
+      </div>
+    </div>
+    <p>&emsp;Anthropic's Claude assisted in reformatting the given template.</p>
+
+    <script>
+      var modal = document.getElementById("modal01");
+      var modalImg = document.getElementById("img01");
+      var modalVid = document.getElementById("vid01");
+      var captionEl = document.getElementById("caption");
+      var titleEl = document.getElementById("modalTitle");
+      var lastFocus = null;
+
+      function openModal(card) {
+        var media = card.querySelector("img, video");
+        var isVideo = media.tagName.toLowerCase() === "video";
+
+        if (isVideo) {
+          modalImg.style.display = "none";
+          modalVid.style.display = "block";
+          modalVid.src = (media.currentSrc || media.src).split("#")[0];
+          modalVid.currentTime = 0;
+        } else {
+          modalVid.pause();
+          modalVid.style.display = "none";
+          modalVid.removeAttribute("src");
+          modalVid.load();
+          modalImg.style.display = "block";
+          modalImg.src = media.src;
+          modalImg.alt = media.alt || "";
+        }
+
+        titleEl.textContent = card.getAttribute("data-title") || "";
+        captionEl.textContent = media.getAttribute("data-caption") || "";
+
+        lastFocus = document.activeElement;
+        modal.classList.add("open");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+        document.getElementById("modalClose").focus();
+      }
+
+      function closeModal() {
+        modalVid.pause();
+        modal.classList.remove("open");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+        if (lastFocus) lastFocus.focus();
+      }
+
+      document.querySelectorAll(".card").forEach(function (card) {
+        card.addEventListener("click", function () {
+          openModal(card);
+        });
+        card.addEventListener("keydown", function (e) {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openModal(card);
+          }
+        });
+      });
+
+      document
+        .getElementById("modalClose")
+        .addEventListener("click", closeModal);
+      modal.addEventListener("click", function (e) {
+        if (e.target === modal) closeModal();
+      });
+      document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && modal.classList.contains("open"))
+          closeModal();
+      });
+    </script>
+  </body>
+</html>
